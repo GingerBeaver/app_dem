@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Demenagement</string>
+    <string name="login">Identifiant</string>
+    <string name="password">Mot de passe</string>
+    <string name="connect">Connexion</string>
+    <string name="new_user">Créer un compte</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_activity_new_user">NewUser</string>
+
+    <!-- NEW USER -->
+    <string name="newuser">Nom d\'utilisateur</string>
+    <string name="password2">Confirmer le mot de passe</string>
+    <string name="next">Etape suivante</string>
+    <string name="email">Email</string>
+    <string name="ok">Valider</string>
+    <string name="sex">Sexe</string>
+    <string name="num_ad">Numéro</string>
+    <string name="adress">Voie</string>
+    <string name="adress2">Complément d\'adresse</string>
+    <string name="zip">Code postal</string>
+    <string name="city">Ville</string>
+    <string name="name">Nom</string>
+    <string name="firstname">Prénom</string>
+    <string name="birth">Date de naissance</string>
+    <string name="format_date">__/__/__</string>
+
+    <!-- SPINNER -->
+    <string-array name="gender_array">
+        <item>Homme</item>
+        <item>Femme</item>
+    </string-array>
+    <string-array name="type_array">
+        <item>Déménageur</item>
+        <item>Déménagé</item>
+    </string-array>
+</resources>
