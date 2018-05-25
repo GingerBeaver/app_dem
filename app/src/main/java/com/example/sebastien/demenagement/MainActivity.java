@@ -3,11 +3,13 @@ package com.example.sebastien.demenagement;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
+import java.lang.reflect.Field;
 
 public class MainActivity extends AppCompatActivity {
     private String name, fname;
@@ -45,8 +47,23 @@ public class MainActivity extends AppCompatActivity {
         fname = read.getString("fname","0");
         mTextMessage = (TextView) findViewById(R.id.message);
         mTextMessage.setText("Bienvenue " +fname+ " " +name);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        // Désactivation du ShiftMode pour avoir les boutons de la barre de navigation symétrique
+        disableShiftMode(navigation);
     }
 
+    public static void disableShiftMode(BottomNavigationView view) {
+        BottomNavigationMenuView menuView = (BottomNavigationMenuView) view.getChildAt(0);
+        try {
+            Field shiftingMode = menuView.getClass().getDeclaredField("mShiftingMode");
+            shiftingMode.setAccessible(true);
+            shiftingMode.setBoolean(menuView, false);
+            shiftingMode.setAccessible(false);
+        } catch (NoSuchFieldException e) {
+            Log.e("BNVHelper", "Unable to get shift mode field", e);
+        } catch (IllegalAccessException e) {
+            Log.e("BNVHelper", "Unable to change value of shift mode", e);
+        }
+    }
 }

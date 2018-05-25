@@ -10,6 +10,8 @@
     <string name="title_notifications">Checklist</string>
     <string name="title_inventory">Inventaire</string>
     <string name="title_activity_new_user">NewUser</string>
+    <string name="customer">Particulier</string>
+    <string name="pro">Professionnel</string>
 
     <!-- NEW USER -->
     <string name="newuser">Nom d\'utilisateur</string>
@@ -18,6 +20,8 @@
     <string name="email">Email</string>
     <string name="ok">Valider</string>
     <string name="sex">Sexe</string>
+    <string name="men">Homme</string>
+    <string name="woman">Femme</string>
     <string name="num_ad">Numéro</string>
     <string name="adress">Voie</string>
     <string name="adress2">Complément d\'adresse</string>

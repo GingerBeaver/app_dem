@@ -64,7 +64,7 @@ public class MyDBHandler {
 
     // Ajout d'un nouvel utilisateur
     public void addUser(String login, String password, int num_ad, String adress, String cplt_ad, int zip, String city, String name,
-                        String firstname, String email, Date birth, String sex, int profil) {
+                        String firstname, String email, Date birth, String sex, String profil) {
         try {
             cnx = newConnection();
             st = cnx.prepareStatement("INSERT INTO users VALUES (?,SHA1(?),?,?,?,?,?,?,?,?,?,?,?)");
@@ -80,7 +80,7 @@ public class MyDBHandler {
             st.setString(10,email);
             st.setDate(11,birth);
             st.setString(12,sex);
-            st.setInt(13,profil);
+            st.setString(13,profil);
             st.executeUpdate();
             cnx.close();
             st.close();

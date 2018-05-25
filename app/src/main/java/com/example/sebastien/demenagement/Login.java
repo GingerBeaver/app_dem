@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -46,7 +45,6 @@ public class Login extends AppCompatActivity {
         EditText login, password;
         Statement st;
         ResultSet res;
-        SharedPreferences.Editor editor;
         login = findViewById(R.id.editLogin);
         password = findViewById(R.id.editPassword);
         try {
@@ -62,7 +60,8 @@ public class Login extends AppCompatActivity {
                 if (login.getText().toString().equals(res.getString(1))) {
                     if (hash.equals(res.getString(2))) {
                         // Création d'un fichier SharedPreferences pour l'utilisateur authentifié
-                        editor = getSharedPreferences("CURRENT_USER", MODE_PRIVATE).edit();
+                        SharedPreferences.Editor editor;
+                        editor = getSharedPreferences(FILENAME, MODE_PRIVATE).edit();
                         editor.putInt("num_adr", res.getInt(3));
                         editor.putString("adress", res.getString(4));
                         editor.putString("cplt_adr", res.getString(5));

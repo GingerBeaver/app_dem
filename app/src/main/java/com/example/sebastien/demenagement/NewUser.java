@@ -1,12 +1,13 @@
 package com.example.sebastien.demenagement;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.RadioGroup;
 import android.support.v4.app.DialogFragment;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +22,7 @@ public class NewUser extends AppCompatActivity {
     private EditText login, password, checkpwd, email, num_ad, adress, cplt_ad, zip, city, name, fname;
     private TextView birth;
     private ArrayAdapter<CharSequence> adapter;
-    private Spinner spin_gender, spin_type;
+    private RadioGroup rg_sex, rg_type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +52,6 @@ public class NewUser extends AppCompatActivity {
         } else {
             setContentView(R.layout.activity_new_user2);
             // Assignation second layout
-            spin_gender = findViewById(R.id.gender);
-            spin_type = findViewById(R.id.type);
             birth = findViewById(R.id.editBirth);
             num_ad = findViewById(R.id.editNum);
             adress = findViewById(R.id.editAdress);
@@ -61,14 +60,8 @@ public class NewUser extends AppCompatActivity {
             city = findViewById(R.id.editCity);
             name = findViewById(R.id.editName);
             fname = findViewById(R.id.editFirstname);
-            // Création du spinner Sexe
-            adapter = ArrayAdapter.createFromResource(this, R.array.gender_array, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spin_gender.setAdapter(adapter);
-            // Création du spinner Profil
-            adapter = ArrayAdapter.createFromResource(this, R.array.type_array, android.R.layout.simple_spinner_item);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spin_type.setAdapter(adapter);
+            rg_type = findViewById(R.id.seg);
+            rg_sex = findViewById(R.id.seg2);
             // Listener pour la saisie de la date de naissance
             birth.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -87,20 +80,32 @@ public class NewUser extends AppCompatActivity {
 
     // Enregistrement d'un nouvel utilisateur
     public void finishRegister(View v) throws ParseException {
-        int profil;
+        int profil = 2;
+        String sex = "Mismatch";
         Date date;
-        // Vérification des champs vides
+
+        int check_sex = rg_sex.getCheckedRadioButtonId();
+        if (check_sex == R.id.menButton) {
+            sex = "Homme";
+        } else if (check_sex == R.id.womanButton) {
+            sex = "Femme";
+        } else if (check_sex == -1) {
+            sex = "Mismatch";
+        }
+        int check_pro = rg_type.getCheckedRadioButtonId();
+        if (check_pro == R.id.demButton) {
+            profil = 0;
+        } else if (check_pro == R.id.proButton) {
+            profil = 1;
+        } else if (check_pro == -1) {
+            profil = 2;
+        }
+        //Vérification des champs vides
         if (num_ad.getText().toString().isEmpty() || adress.getText().toString().isEmpty() || zip.getText().toString().isEmpty() ||
                 city.getText().toString().isEmpty() || name.getText().toString().isEmpty() || fname.getText().toString().isEmpty() ||
-                birth.getText().toString().isEmpty()) {
+                birth.getText().toString().isEmpty() || sex.equals("Mismatch") || profil == 2) {
             Toast.makeText(this,"Champ(s) vide(s)",Toast.LENGTH_LONG).show();
         } else {
-            // Transformation du profil en test binaire
-            if (spin_type.toString().equals("Déménageur")) {
-                profil = 0;
-            } else {
-                profil = 1;
-            }
             // Formattage de la date pour être insérée dans la base de donnée en tant que java.sql.Date
             SimpleDateFormat input = new SimpleDateFormat("dd/MM/yyyy", Locale.FRENCH);
             date = input.parse(birth.getText().toString());
@@ -113,7 +118,22 @@ public class NewUser extends AppCompatActivity {
             dbhandler.addUser(login.getText().toString(), password.getText().toString(), Integer.parseInt(num_ad.getText().toString()),
                     adress.getText().toString(), cplt_ad.getText().toString(), Integer.parseInt(zip.getText().toString()),
                     city.getText().toString(), name.getText().toString(),fname.getText().toString(), email.getText().toString(),
-                    new java.sql.Date(new GregorianCalendar(y,m,d).getTimeInMillis()), spin_gender.getSelectedItem().toString(),profil);
+                    new java.sql.Date(new GregorianCalendar(y,m,d).getTimeInMillis()), sex, String.valueOf(profil));
+            // Création d'un fichier SharedPreferences pour l'utilisateur authentifié
+            SharedPreferences.Editor editor;
+            editor = getSharedPreferences("CURRENT_USER", MODE_PRIVATE).edit();
+            editor.putInt("num_adr", Integer.parseInt(num_ad.getText().toString()));
+            editor.putString("adress", adress.getText().toString());
+            editor.putString("cplt_adr", cplt_ad.getText().toString());
+            editor.putInt("zip_code", Integer.parseInt(zip.getText().toString()));
+            editor.putString("city", city.getText().toString());
+            editor.putString("name", name.getText().toString());
+            editor.putString("fname", fname.getText().toString());
+            editor.putString("email", email.getText().toString());
+            editor.putString("birth", y+"-"+m+"-"+d);
+            editor.putString("sex", sex);
+            editor.putInt("profil", profil);
+            editor.apply();
             Intent intent = new Intent(NewUser.this, MainActivity.class);
             startActivity(intent);
         }
