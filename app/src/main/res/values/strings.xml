@@ -5,9 +5,10 @@
     <string name="connect">Connexion</string>
     <string name="new_user">Créer un compte</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_home">Bienvenue</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Compte</string>
+    <string name="title_dashboard">Chat</string>
+    <string name="title_notifications">Checklist</string>
+    <string name="title_inventory">Inventaire</string>
     <string name="title_activity_new_user">NewUser</string>
 
     <!-- NEW USER -->

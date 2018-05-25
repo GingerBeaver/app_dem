@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home +fname+ " " +name);
                     return true;
+                case R.id.navigation_inventory:
+                    mTextMessage.setText(R.string.title_inventory);
+                    return true;
                 case R.id.navigation_dashboard:
                     mTextMessage.setText(R.string.title_dashboard);
                     return true;
