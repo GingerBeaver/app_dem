@@ -1,5 +1,6 @@
 package com.example.sebastien.demenagement;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class NewUser extends AppCompatActivity {
     private MyDBHandler dbhandler = new MyDBHandler();
@@ -25,6 +27,7 @@ public class NewUser extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_user);
+        // Assignation premier layout
         login = findViewById(R.id.editLogin);
         password = findViewById(R.id.editPassword);
         checkpwd = findViewById(R.id.editPassword2);
@@ -32,17 +35,22 @@ public class NewUser extends AppCompatActivity {
     }
 
     public void nextUserLayout(View v) {
+        // Batterie de vérification Login/Password/Email
         if (dbhandler.checkUser(login.getText().toString())) {
             Toast.makeText(this,"Le nom d'utilisateur \"" +login.getText()+ "\" est déjà utilisé",Toast.LENGTH_LONG).show();
+        } else if (login.getText().toString().isEmpty()) {
+            Toast.makeText(this,"Le champ \"nom d'utilisateur\" ne peut être vide",Toast.LENGTH_LONG).show();
         }else if (!password.getText().toString().equals(checkpwd.getText().toString())) {
             Toast.makeText(this,"Erreur lors de la vérification du mot de passe",Toast.LENGTH_LONG).show();
         } else if (password.getText().toString().isEmpty()) {
             Toast.makeText(this,"Le champ \"mot de passe\" ne peut être vide",Toast.LENGTH_LONG).show();
         } else if (!email.getText().toString().contains("@") || !email.getText().toString().contains(".")) {
-            Toast.makeText(this,"Email invalide",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Email invalide", Toast.LENGTH_LONG).show();
+        } else if (dbhandler.checkMail(email.getText().toString())) {
+                Toast.makeText(this,"L'email \"" +email.getText()+ "\" est déjà utilisé",Toast.LENGTH_LONG).show();
         } else {
             setContentView(R.layout.activity_new_user2);
-            // Assignation
+            // Assignation second layout
             spin_gender = findViewById(R.id.gender);
             spin_type = findViewById(R.id.type);
             birth = findViewById(R.id.editBirth);
@@ -71,30 +79,43 @@ public class NewUser extends AppCompatActivity {
         }
     }
 
+    // Affichage de la box de dialogue de la date (voir DatePickerFragment)
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 
+    // Enregistrement d'un nouvel utilisateur
     public void finishRegister(View v) throws ParseException {
         int profil;
         Date date;
-        if (spin_type.toString().equals("Déménageur")) {
-            profil = 0;
+        // Vérification des champs vides
+        if (num_ad.getText().toString().isEmpty() || adress.getText().toString().isEmpty() || zip.getText().toString().isEmpty() ||
+                city.getText().toString().isEmpty() || name.getText().toString().isEmpty() || fname.getText().toString().isEmpty() ||
+                birth.getText().toString().isEmpty()) {
+            Toast.makeText(this,"Champ(s) vide(s)",Toast.LENGTH_LONG).show();
         } else {
-            profil = 1;
+            // Transformation du profil en test binaire
+            if (spin_type.toString().equals("Déménageur")) {
+                profil = 0;
+            } else {
+                profil = 1;
+            }
+            // Formattage de la date pour être insérée dans la base de donnée en tant que java.sql.Date
+            SimpleDateFormat input = new SimpleDateFormat("dd/MM/yyyy", Locale.FRENCH);
+            date = input.parse(birth.getText().toString());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy", Locale.US);
+            int y = Integer.parseInt(sdf.format(date));
+            sdf = new SimpleDateFormat("MM", Locale.US);
+            int m = Integer.parseInt(sdf.format(date)) - 1;
+            sdf = new SimpleDateFormat("dd", Locale.US);
+            int d = Integer.parseInt(sdf.format(date));
+            dbhandler.addUser(login.getText().toString(), password.getText().toString(), Integer.parseInt(num_ad.getText().toString()),
+                    adress.getText().toString(), cplt_ad.getText().toString(), Integer.parseInt(zip.getText().toString()),
+                    city.getText().toString(), name.getText().toString(),fname.getText().toString(), email.getText().toString(),
+                    new java.sql.Date(new GregorianCalendar(y,m,d).getTimeInMillis()), spin_gender.getSelectedItem().toString(),profil);
+            Intent intent = new Intent(NewUser.this, MainActivity.class);
+            startActivity(intent);
         }
-        SimpleDateFormat input = new SimpleDateFormat("dd/MM/yyyy");
-        date = input.parse(birth.getText().toString());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-        int y = Integer.parseInt(sdf.format(date));
-        sdf = new SimpleDateFormat("MM");
-        int m = Integer.parseInt(sdf.format(date));
-        sdf = new SimpleDateFormat("dd");
-        int d = Integer.parseInt(sdf.format(date));
-        dbhandler.addUser(login.getText().toString(), password.getText().toString(), Integer.parseInt(num_ad.getText().toString()),
-                adress.getText().toString(), cplt_ad.getText().toString(), Integer.parseInt(zip.getText().toString()),
-                city.getText().toString(), name.getText().toString(),fname.getText().toString(),
-                new java.sql.Date(new GregorianCalendar(y,m,d).getTimeInMillis()), spin_gender.getSelectedItem().toString(),profil);
     }
 }
