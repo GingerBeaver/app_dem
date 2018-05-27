@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">Demenagement</string>
-    <string name="login">Identifiant</string>
     <string name="password">Mot de passe</string>
-    <string name="connect">Connexion</string>
+    <string name="connect">Se Connecter</string>
     <string name="new_user">Créer un compte</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_home">Compte</string>
@@ -14,9 +13,9 @@
     <string name="pro">Professionnel</string>
 
     <!-- NEW USER -->
-    <string name="newuser">Nom d\'utilisateur</string>
+    <string name="login">Nom d\'utilisateur</string>
     <string name="password2">Confirmer le mot de passe</string>
-    <string name="next">Etape suivante</string>
+    <string name="next">Suite</string>
     <string name="email">Email</string>
     <string name="ok">Valider</string>
     <string name="sex">Sexe</string>
